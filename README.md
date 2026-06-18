@@ -56,8 +56,13 @@ EOF
 
 # 运行脚本
 python3 generate_tts.py
-```
 
+```
+### 4. HyperFrames 渲染输出
+```bash
+npx hyperframes lint
+npx hyperframes render --quality draft --format mp4
+```
 ---
 
 ## 🔗 万物回响：八大文明维度图谱 (Civilization Map)
