@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bird Science Video Generator — 晨曦暖色版 (Light Mode)</title>
+  <!--
+    ═══════════════════════════════════════════════════════════════
+    Bird-Science-Video-Generator V7.0 — 晨曦暖色版 (Light Mode)
+    
+    版本 A：经典暖黄底 #F0EDE4，深咖啡色文字 #5C5040
+    入场动画：1/3 左侧滑入 (power3.out, x: -40→0)
+    剪映混合模式：正片叠底（Multiply）
+    
+    用法：将所有 {{VARIABLE}} 占位符替换为实际鸟种数据。
+    完整规范请参阅 SKILL.md。
+    ═══════════════════════════════════════════════════════════════
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    /* ═══ V6.0-A: 晨曦暖色版 ═══ */
+    body {
+      margin: 0; width: 1920px; height: 1080px;
+      overflow: hidden; background: #F0EDE4; font-family: serif;
+    }
+    .scene {
+      position: absolute; top: 0; left: 0;
+      width: 1920px; height: 1080px;
+      overflow: hidden; background: #F0EDE4;
+    }
+    .left-panel {
+      position: absolute; top: 0; left: 0;
+      width: 640px; height: 1080px;
+      background: #F0EDE4;
+      border-right: 1px solid rgba(0,0,0,0.1);
+      display: flex; flex-direction: column;
+      padding: 80px 56px; box-sizing: border-box;
+      overflow: hidden; gap: 22px;
+    }
+    .left-panel.center { justify-content: center; }
+
+    /* ═══ 暖色系文字 ═══ */
+    .hero-title   { font-size: 80px; font-weight: 700; color: #5C5040; line-height: 1.15; letter-spacing: 0.04em; }
+    .hero-subtitle { font-size: 28px; font-weight: 400; color: #8B7B6B; line-height: 1.4; }
+    .section-title { font-size: 56px; font-weight: 700; color: #5C5040; line-height: 1.2; letter-spacing: 0.03em; }
+    .body-text     { font-size: 26px; font-weight: 400; color: #5C5040; line-height: 1.65; }
+    .body-text.lg  { font-size: 28px; }
+    .body-text.sm  { font-size: 22px; }
+    .label-text    { font-size: 20px; font-weight: 400; color: #8B7B6B; line-height: 1.4; letter-spacing: 0.08em; }
+    .stat-number   { font-size: 84px; font-weight: 700; line-height: 1; }
+    .stat-label    { font-size: 24px; font-weight: 400; color: #8B7B6B; line-height: 1.4; }
+
+    .accent-pri  { color: {{PRIMARY_HEX}}; }
+    .accent-sec  { color: {{SECONDARY_HEX}}; }
+    .accent-tri  { color: {{TERTIARY_HEX}}; }
+
+    .divider { width: 140px; height: 3px; background: {{PRIMARY_HEX}}; border-radius: 1px; }
+    .divider.sec { background: {{SECONDARY_HEX}}; }
+    .divider.tri { background: {{TERTIARY_HEX}}; }
+
+    .radial-glow { position: absolute; border-radius: 50%; pointer-events: none; }
+    .color-swatch { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .swatch-dot   { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.15); }
+    .swatch-label { font-size: 16px; color: #5C5040; }
+    .swatch-label-cn { font-size: 16px; color: #8B7B6B; letter-spacing: 0.05em; }
+
+    .fact-card {
+      display: flex; flex-direction: column;
+      padding: 24px 28px;
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-left: 4px solid {{PRIMARY_HEX}};
+      gap: 10px;
+    }
+    .tag-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .info-tag {
+      font-size: 20px; font-weight: 400;
+      border: 2px solid {{PRIMARY_HEX}}; color: {{PRIMARY_HEX}};
+      padding: 5px 14px; border-radius: 3px;
+    }
+    .info-tag.sec { border-color: {{SECONDARY_HEX}}; color: {{SECONDARY_HEX}}; }
+    .info-tag.tri { border-color: {{TERTIARY_HEX}}; color: {{TERTIARY_HEX}}; }
+    .migration-label {
+      font-size: 20px; font-weight: 600;
+      color: #F0EDE4; background: {{PRIMARY_HEX}};
+      padding: 6px 16px; display: inline-block;
+    }
+
+    .closing-card {
+      position: absolute; top: 0; left: 0;
+      width: 1920px; height: 1080px;
+      background: #F0EDE4;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 24px; z-index: 10;
+      opacity: 0; pointer-events: none;
+    }
+    .closing-title { font-size: 96px; color: #5C5040; }
+    .closing-divider { width: 200px; height: 3px; background: {{PRIMARY_HEX}}; border-radius: 1px; }
+    .closing-sub { font-size: 36px; color: #8B7B6B; }
+
+    .national-bird-badge {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 16px;
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 4px; width: fit-content;
+    }
+    .badge-flag  { font-size: 22px; }
+    .badge-text  { font-size: 17px; font-weight: 400; color: {{PRIMARY_HEX}}; }
+
+    .opening-eyebrow { font-size: 16px; font-weight: 400; color: {{PRIMARY_HEX}}; letter-spacing: 0.12em; text-transform: uppercase; }
+    .opening-tag { font-size: 20px; font-weight: 400; color: #8B7B6B; letter-spacing: 0.06em; margin-top: 12px; }
+
+    .migration-route-card {
+      display: flex; flex-direction: column;
+      padding: 20px 24px;
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 4px; gap: 12px;
+    }
+    .route-header { display: flex; align-items: center; gap: 10px; }
+    .route-icon   { font-size: 22px; }
+    .route-name   { font-size: 19px; font-weight: 600; color: #5C5040; }
+    .route-stat { display: flex; align-items: baseline; gap: 8px; }
+    .route-stat-num  { font-size: 42px; font-weight: 700; color: {{PRIMARY_HEX}}; line-height: 1; }
+    .route-stat-unit { font-size: 18px; color: #8B7B6B; }
+    .route-path { display: flex; align-items: center; gap: 4px; }
+    .route-dot  { width: 8px; height: 8px; border-radius: 50%; background: {{PRIMARY_HEX}}; }
+    .route-line { flex: 1; height: 1px; background: rgba(0,0,0,0.15); }
+    .route-countries { font-size: 18px; color: #5C5040; line-height: 1.6; }
+    .route-label {
+      font-size: 16px; font-weight: 600;
+      color: {{PRIMARY_HEX}};
+      background: rgba(0,0,0,0.05);
+      padding: 4px 12px; border-radius: 2px; width: fit-content;
+    }
+    .migration-tag {
+      font-size: 20px; font-weight: 400;
+      color: {{PRIMARY_HEX}};
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.1);
+      padding: 5px 14px; border-radius: 3px;
+      display: inline-block; width: fit-content;
+    }
+    /* V6.2: 栖息地卡片 — A版暖色 */
+    .habitat-card {
+      display: flex; flex-direction: column;
+      padding: 20px 24px;
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.1);
+      border-radius: 4px; gap: 12px;
+    }
+    .habitat-header { display: flex; align-items: center; gap: 10px; }
+    .habitat-icon   { font-size: 22px; }
+    .habitat-title  { font-size: 19px; font-weight: 600; color: #5C5040; }
+    .habitat-desc   { font-size: 18px; color: #5C5040; line-height: 1.6; }
+    .wetland-subcard {
+      display: flex; flex-direction: column;
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.02);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 3px; gap: 8px; margin-top: 4px;
+    }
+    .wetland-header { display: flex; align-items: center; gap: 8px; }
+    .wetland-icon   { font-size: 18px; }
+    .wetland-name   { font-size: 17px; font-weight: 600; color: #5C5040; }
+    .wetland-desc   { font-size: 16px; color: #8B7B6B; line-height: 1.55; }
+    .wetland-tag {
+      font-size: 16px; font-weight: 600;
+      color: {{PRIMARY_HEX}};
+      background: rgba(0,0,0,0.05);
+      padding: 3px 10px; border-radius: 2px; width: fit-content;
+    }
+    .echo-card { display: block; opacity: 0; max-width: 640px; }
+  </style>
+</head>
+<body>
+  <div id="root"
+    data-composition-id="{{PROJECT_ID}}_A"
+    data-width="1920" data-height="1080"
+    data-start="0" data-duration="{{TOTAL_DURATION}}">
+    <audio id="narration" data-track-index="3" data-format="wav" src="narration.wav" data-rendersilence="false" data-role="narration" data-visibility="invisible" style="display:none;" data-start="0" data-duration="{{TTS_DURATION}}"></audio>
+
+    <!-- V6.0-A: Opening Card -->
+    <div id="scene0" class="scene" style="z-index: 10; opacity: 1;">
+      <div class="left-panel opening-panel center">
+        <div class="radial-glow s0-g1" style="width:400px;height:400px;top:200px;left:120px;background:radial-gradient(circle,rgba(0,0,0,0.04) 0%,rgba(0,0,0,0) 70%);" data-layout-allow-overflow></div>
+        <div class="radial-glow s0-g2" style="width:280px;height:280px;bottom:100px;right:-60px;background:radial-gradient(circle,rgba(0,0,0,0.03) 0%,rgba(0,0,0,0) 70%);" data-layout-allow-overflow></div>
+        <div class="opening-eyebrow s0-eyebrow">鸟类以鸟之名</div>
+        <div class="hero-title s0-hero" style="font-size:88px;">{{SPECIES_NAME}}</div>
+        <div class="divider s0-div" style="width:100px;"></div>
+        <div class="hero-subtitle s0-sub">{{ENGLISH_NAME}}</div>
+        <div class="opening-tag s0-tag">{{THEME_TAG}}</div>
+      </div>
+    </div>
+
+    <!-- S1: 初见 -->
+    <div id="scene1" class="scene">
+      <div class="left-panel s1-panel">
+        <div class="radial-glow s1-g1" style="width:350px;height:350px;top:40px;left:280px;background:radial-gradient(circle,rgba(0,0,0,0.04) 0%,rgba(0,0,0,0) 70%);" data-layout-allow-overflow></div>
+        <div class="radial-glow s1-g2" style="width:260px;height:260px;bottom:-40px;left:-40px;background:radial-gradient(circle,rgba(0,0,0,0.03) 0%,rgba(0,0,0,0) 70%);" data-layout-allow-overflow></div>
+        <div class="label-text s1-label">{{FAMILY_LABEL}}</div>
+        <div class="hero-title s1-hero">{{SPECIES_NAME}}</div>
+        <div class="divider s1-div"></div>
+        <div class="hero-subtitle s1-sub">{{ENGLISH_NAME}}<br/>{{NICKNAME}}</div>
+        {{NATIONAL_BIRD_BADGE}}
+        <div class="body-text s1-body">{{S1_BODY}}</div>
+      </div>
+    </div>
+
+    <!-- S2-S6: follow Section 4 scene template -->
+
+    <div class="closing-card">
+      <div class="hero-title closing-title">{{SPECIES_NAME}}</div>
+      <div class="closing-divider"></div>
+      <div class="hero-subtitle closing-sub">{{ENGLISH_NAME}}<br/>{{NICKNAME}}</div>
+      <svg class="echo-card s0-echo" viewBox="0 0 600 180" width="600" height="180" xmlns="http://www.w3.org/2000/svg">
+        <rect width="600" height="180" rx="4" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="1" />
+        <text x="300" y="36" text-anchor="middle" font-family="serif" font-size="18" font-weight="700" fill="#5C5040" letter-spacing="0.06em">鸟 类 万 物 回 响</text>
+        {{ECHO_ROWS}}
+      </svg>
+    </div>
+  </div>
+  <script>
+    window.__timelines = window.__timelines || {};
+    var tl = gsap.timeline({ paused: true });
+
+    // ═══ V6.0-A: Opening Card — 左侧滑入动画 ═══
+    tl.to(".s0-g1", { scale: 1.06, duration: 2.5, ease: "sine.inOut" }, 0.1);
+    tl.to(".s0-g2", { scale: 1.05, duration: 2.2, ease: "sine.inOut" }, 0.15);
+    tl.fromTo(".s0-eyebrow", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 0.1);
+    tl.fromTo(".s0-hero",    { opacity: 0, x: -40, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.8, ease: "power3.out" }, 0.25);
+    tl.fromTo(".s0-div",     { scaleX: 0, transformOrigin: "center" }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, 0.7);
+    tl.fromTo(".s0-sub",     { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 1.0);
+    tl.fromTo(".s0-tag",     { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, 1.2);
+
+    var OPENING_EXIT = 2.0;
+    tl.to("#scene0",  { filter: "blur(20px)", scale: 1.04, duration: 0.55, ease: "power1.in", overwrite: "auto" }, OPENING_EXIT);
+    tl.to("#scene0",  { opacity: 0, duration: 0.35, ease: "power1.in", overwrite: "auto" }, OPENING_EXIT + 0.4);
+    tl.fromTo("#scene1", { filter: "blur(20px)", scale: 0.96 }, { filter: "blur(20px)", scale: 0.96, opacity: 1, visibility: "visible", duration: 0.3, ease: "power1.inOut", overwrite: "auto" }, OPENING_EXIT + 0.5);
+    tl.to("#scene1",  { filter: "blur(0px)", scale: 1, duration: 0.55, ease: "power1.out" }, OPENING_EXIT + 0.75);
+    tl.set("#scene0", { visibility: "hidden" }, OPENING_EXIT + 1.4);
+
+    // --- S1: 左侧滑入动画 ---
+    var S1 = {{S1_START}};
+    var S1_TRANS = {{S1_END}};
+    tl.to(".s1-g1", { scale: 1.05, duration: 3.0, ease: "sine.inOut", yoyo: true, repeat: 1 }, S1 + 0.2);
+    tl.to(".s1-g2", { scale: 1.06, duration: 2.8, ease: "sine.inOut", yoyo: true, repeat: 1 }, S1 + 0.3);
+    tl.fromTo(".s1-label", { opacity: 0, x: -40 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, S1 + 0.3);
+    tl.fromTo(".s1-hero",  { opacity: 0, x: -40, scale: 0.95 }, { opacity: 1, x: 0, scale: 1, duration: 0.7, ease: "power3.out" }, S1 + 0.5);
+    tl.fromTo(".s1-div",   { scaleX: 0, transformOrigin: "left center" }, { scaleX: 1, duration: 0.5, ease: "power3.out" }, S1 + 0.8);
+    tl.fromTo(".s1-sub",   { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, S1 + 1.1);
+    tl.fromTo(".s1-badge", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.5, ease: "power3.out" }, S1 + 1.5);
+    tl.fromTo(".s1-body",  { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.6, ease: "power3.out" }, S1 + 1.8);
+
+    // Crossfade 1→2
+    tl.to("#scene1",  { filter: "blur(20px)", scale: 1.04, duration: 0.55, ease: "power1.in", overwrite: "auto" }, S1_TRANS);
+    tl.to("#scene1",  { opacity: 0, duration: 0.35, ease: "power1.in", overwrite: "auto" }, S1_TRANS + 0.4);
+    tl.fromTo("#scene2", { filter: "blur(20px)", scale: 0.96 }, { filter: "blur(20px)", scale: 0.96, opacity: 1, visibility: "visible", duration: 0.3, ease: "power1.inOut", overwrite: "auto" }, S1_TRANS + 0.5);
+    tl.to("#scene2",  { filter: "blur(0px)", scale: 1, duration: 0.55, ease: "power1.out" }, S1_TRANS + 0.75);
+    tl.set("#scene1", { visibility: "hidden" }, S1_TRANS + 1.4);
+
+    // --- S2-S5: repeat Section 7 recipe with Version A left-slide-in ---
+
+    // --- S6 final exit ---
+    tl.to(".s6-hero",  { opacity: 0, y: -12, duration: 0.5, ease: "power2.in" }, {{EXIT_TIME}});
+    tl.to(".s6-body",  { opacity: 0, duration: 0.4, ease: "power1.in" }, {{EXIT_TIME}} + 0.1);
+    tl.to(".s6-body2", { opacity: 0, duration: 0.4, ease: "power1.in" }, {{EXIT_TIME}} + 0.2);
+    tl.to(".s6-div",   { opacity: 0, duration: 0.3, ease: "power1.in" }, {{EXIT_TIME}} + 0.3);
+    tl.to(".s6-tag",   { opacity: 0, scale: 0.95, duration: 0.4, ease: "power2.in" }, {{EXIT_TIME}} + 0.4);
+    tl.to(".s6-g1",    { opacity: 0, duration: 0.5, ease: "power2.in" }, {{EXIT_TIME}} + 0.5);
+    tl.to(".closing-card", { opacity: 1, visibility: "visible", duration: 0.8, ease: "power2.out" }, {{EXIT_TIME}});
+    tl.fromTo(".s0-echo", { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, {{EXIT_TIME}} + 0.6);
+
+    window.__timelines["{{PROJECT_ID}}_A"] = tl;
+  </script>
+</body>
+</html>
