@@ -1,6 +1,7 @@
 # 🕊️ 以鸟之名 (In the Name of Birds) | V7.0
 
 > **"拍下一只鸟，找回人类文明的一块拼图。"**
+> **Codename: `bird-science-video-generator`**
 
 这是一个专为生态摄影师与科普博主打造的 **AI 电影级短视频自动化生产线 (Web-based Automation Engine)**。作为一个代码小白，我通过 Trae Agent 构建了这套系统。我们不仅在做科普视频，更在通过 AI 挖掘每一只鸟背后的文明碎片，提醒人类：保护鸟类，其实是在保护人类文明的源代码。
 
@@ -10,7 +11,11 @@
 
 我们每天都能听到鸟鸣，但在大多数人眼里，它们只是背景。我们忘了：人类最伟大的发明——新干线的车头、隐身战斗机的机翼、甚至是贝多芬的乐章，**全都刻着鸟类的基因。**
 
-本项目通过 **Obsidian 式的非线性知识图谱** 逻辑，打通了 **"语义理解 ➔ 自动联网配图 ➔ 视觉风格化同步 ➔ 视频自动化合成"** 的全分层闭环，让公众在惊叹于自然与文明的连接时，学会了解鸟、爱护鸟。
+We hear birdsong every day. To most, it fades into the background. We have forgotten: the nose of the Shinkansen, the wing of a stealth fighter, even a Beethoven symphony — all carry the genetic signature of birds. Every bird is a living fragment of civilization's source code, and this project is our attempt to recover it before it fades from memory.
+
+本项目通过 **Obsidian 式的非线性知识图谱** 逻辑，打通了 **"语义理解 → 自动联网配图 → 视觉风格化同步 → 视频自动化合成"** 的全分层闭环，让公众在惊叹于自然与文明的连接时，学会了解鸟、爱护鸟。
+
+Through an Obsidian-inspired non-linear knowledge graph, this project orchestrates the full pipeline — semantic understanding → automated web-sourced imagery → synchronized visual styling → automated video synthesis — transforming passive viewers into active stewards of the natural world.
 
 ---
 
@@ -56,30 +61,39 @@ EOF
 
 # 运行脚本
 python3 generate_tts.py
-
 ```
-### 4. HyperFrames 渲染输出
+
+### 4. HyperFrames 渲染输出 (HyperFrames Render)
+
+使用 HyperFrames 将 HTML 模板渲染为最终视频文件：
+
 ```bash
 npx hyperframes lint
 npx hyperframes render --quality draft --format mp4
 ```
+
 ---
 
 ## 🔗 万物回响：八大文明维度图谱 (Civilization Map)
 
 本项目彻底打破碎片化科普，每只鸟类自动链接以下人类文明核心节点：
 
-*   **【人类科技】**：羽毛结构色防伪、翠鸟长喙与流体力学。
-*   **【工艺美学】**：传统点翠、羽饰演变。
-*   **【古建筑学】**：飞檐脊梁、燕尾枋构造。
-*   **【天文神话】**：二十八星宿、朱雀图腾。
-*   **【古典音乐】**、**【近现代电影】**、**【文学意象】**、**【生态哨兵】**。
+*   **【人类科技】**: 羽毛结构色防伪、翠鸟长喙与流体力学。
+*   **【工艺美学】**: 传统点翠、羽饰演变。
+*   **【古建筑学】**: 飞檐脊梁、燕尾枋构造。
+*   **【天文神话】**: 二十八星宿、朱雀图腾。
+*   **【古典音乐】**: 鸟鸣动机与古典乐章的千年对话。
+*   **【近现代电影】**: 银幕中的鸟类象征与叙事符码。
+*   **【文学意象】**: 从《诗经》到博尔赫斯，鸟类作为永恒诗眼。
+*   **【生态哨兵】**: 鸟类作为环境健康的终极指示物种。
 
 ---
 
 ## ✉️ 致开发者与同行者
 
 我是一个不会代码的小白，但我希望能成为自然界的一个扩音器。虽然我错过了比赛的截止日期，但我对自然与科技的热爱永不打折。欢迎所有热爱鸟类的博主和开发者一起提交 Pull Request，共同丰富这个百鸟回响的文明宇宙！
+
+I am not a programmer — just someone who wants to be a loudspeaker for the natural world. The contest deadline has passed, but my love for nature and technology remains undimmed. To all bird lovers, creators, and developers: pull requests are deeply welcome. Together, let us build a universe where every bird sings back through the ages.
 
 ---
 
