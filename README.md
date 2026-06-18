@@ -1,92 +1,87 @@
-# Bird-Science-Video-Generator (V7.0)
+# 🕊️ 以鸟之名 (In the Name of Birds) | V7.0
 
-> 鸟类科普画中画视频生成器 — Cinematic bird science PiP video generator
+> **"拍下一只鸟，找回人类文明的一块拼图。"**
 
-## 概述
+这是一个专为生态摄影师与科普博主打造的 **AI 电影级短视频自动化生产线 (Web-based Automation Engine)**。作为一个代码小白，我通过 Trae Agent 构建了这套系统。我们不仅在做科普视频，更在通过 AI 挖掘每一只鸟背后的文明碎片，提醒人类：保护鸟类，其实是在保护人类文明的源代码。
 
-将鸟类生物学知识与人类文明链接转化为专业的科普视频。左侧 1/3（640px）编辑面板承载鸟类信息，右侧 2/3（1280px）透明区域留给实拍素材。
+---
 
-**双版本预设**，用户可根据视频背景素材选择最合适的版本：
+## 🌟 项目初心与使命 (Our Mission)
 
-| 版本 | 文件 | 背景色 | 文字色 | 入场动画 | 剪映混合 |
-|------|------|--------|--------|----------|----------|
-| **A: 晨曦暖色版** | `index_A.html` | `#F0EDE4` 暖黄 | `#5C5040` 深咖啡 | 1/3 左侧滑入 | 正片叠底（Multiply） |
-| **B: 暮影电影版** | `index_B.html` | `#000000` 纯黑 | `#FFFFFF` 纯白 | 标准淡入 | 滤色（Screen） |
+我们每天都能听到鸟鸣，但在大多数人眼里，它们只是背景。我们忘了：人类最伟大的发明——新干线的车头、隐身战斗机的机翼、甚至是贝多芬的乐章，**全都刻着鸟类的基因。**
 
-## 快速开始
+本项目通过 **Obsidian 式的非线性知识图谱** 逻辑，打通了 **"语义理解 ➔ 自动联网配图 ➔ 视觉风格化同步 ➔ 视频自动化合成"** 的全分层闭环，让公众在惊叹于自然与文明的连接时，学会了解鸟、爱护鸟。
 
-### 1. 选择版本
+---
 
-```
-明亮/杂乱/浅色背景（天空、花丛、草地、树林）
-  → 选择 A 版：index_A.html
-  → 在剪映中：正片叠底（Multiply）
+## 🎨 双模美学预设 (Dual-Theme Presets)
 
-深色/纯净/暗光背景（夜景、深林、暗色背景）
-  → 选择 B 版：index_B.html
-  → 在剪映中：滤色（Screen）
-```
+用户可根据拍摄素材的背景色彩与整体基调，自由切换完美适配的视觉版本：
+
+| 版本 | 核心文件 | 背景色 | 文字色 | 入场动画 | 剪映/Premiere 混合模式 | 适用场景 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **A: 晨曦暖色版** | `index_A.html` | `#F0EDE4` 暖黄 | `#5C5040` 深咖啡 | 1/3 左侧滑入 | **正片叠底 (Multiply)** | 明亮/杂乱/浅色背景（天空、草地、树林） |
+| **B: 暮影电影版** | `index_B.html` | `#000000` 纯黑 | `#FFFFFF` 纯白 | 标准淡入 | **滤色 (Screen)** | 深色/纯净/暗光背景（夜景、深林、暗色背景） |
+
+---
+
+## 🚀 快速开始 (Quick Start)
+
+### 1. 选择版本与布局
+
+根据你的正片素材色调，选择克隆并打开 `index_A.html` 或 `index_B.html`。界面左侧 1/3 (640px) 为智能编辑面板承载鸟类文明信息，右侧 2/3 (1280px) 为透明区域，完美预留给你的实拍视频素材。
 
 ### 2. 替换模板变量
 
-打开对应的 HTML 文件，将所有 `{{VARIABLE}}` 占位符替换为实际鸟种数据。详见 [SKILL.md](./SKILL.md) 中的完整规范。
+打开对应的 HTML 文件，将所有 `{{VARIABLE}}` 占位符替换为具体的鸟类数据（支持调用本项目内置的 8 大文明维度知识库）。
 
-### 3. 生成视频
+### 3. 一键生成旁白音频 (TTS Generation)
+
+在本地运行以下优化后的 Python 脚本，直接利用 edge-tts 引擎生成高质感广播级旁白：
 
 ```bash
-# 1. 生成 TTS 旁白
-python3 -c "
-import asyncio, edge_tts
+# 创建独立脚本文件
+cat << 'EOF' > generate_tts.py
+import asyncio
+import edge_tts
+
 async def gen():
-    text = open('narration.txt').read()
-    comm = edge_tts.Communicate(text, 'zh-CN-XiaoxiaoNeural', rate='-10%')
+    text = open('narration.txt', 'r', encoding='utf-8').read()
+    comm = edge_tts.Communicate(text, 'zh-CN-XiaoxiaNeural', rate='-10%')
     await comm.save('narration.mp3')
-asyncio.run(gen())
-"
-# 2. 转为 WAV
-ffmpeg -y -i narration.mp3 -acodec pcm_s16le narration.wav
 
-# 3. 检查与渲染
-npx hyperframes lint
-npx hyperframes render --quality draft --format mp4
+if __name__ == '__main__':
+    asyncio.run(gen())
+EOF
+
+# 运行脚本
+python3 generate_tts.py
 ```
 
-## 场景结构
+---
 
-7 个标准场景 + 开幕卡 + 闭幕卡：
+## 🔗 万物回响：八大文明维度图谱 (Civilization Map)
 
-| 场景 | 内容 | 核心组件 |
-|------|------|----------|
-| **S0 开幕** | 封面 | 物种名 + 英文名 + 主题标签 |
-| **S1 初见** | 物种介绍 | 科属标签 + 物种名 + 国鸟徽章(若有) |
-| **S2 羽色** | 羽色密码 | color-swatch × 5 + 中国古典色谱名 |
-| **S3 习性** | 食性与行为 | 迁徙标签 + 特有标注 + 知识点卡片 |
-| **S4 巢穴** | 社交与繁殖 | 大数据展示 + 信息标签 |
-| **S5 迁徙** | 迁徙/分布 | 迁徙路线卡 + 栖息地卡 + 湿地关联 |
-| **S6 收束** | 文化关联 | 八维文化覆盖 + 联网搜图 |
-| **S7 生态** | 保护呼吁 | 保护等级 + 种群趋势 + 威胁标签 + 呼吁文案 |
-| **闭幕** | 片尾 | 物种名 + SVG 摘要卡 |
+本项目彻底打破碎片化科普，每只鸟类自动链接以下人类文明核心节点：
 
-## 技术栈
+*   **【人类科技】**：羽毛结构色防伪、翠鸟长喙与流体力学。
+*   **【工艺美学】**：传统点翠、羽饰演变。
+*   **【古建筑学】**：飞檐脊梁、燕尾枋构造。
+*   **【天文神话】**：二十八星宿、朱雀图腾。
+*   **【古典音乐】**、**【近现代电影】**、**【文学意象】**、**【生态哨兵】**。
 
-- **GSAP 3.14** — 动画引擎
-- **Edge-TTS** (`zh-CN-XiaoxiaoNeural`) — TTS 旁白
-- **HyperFrames** — 视频渲染
-- **剪映** — 后期合成（正片叠底/滤色混合模式）
+---
 
-## 文件说明
+## ✉️ 致开发者与同行者
 
-```
-bird-science-video-generator/
-├── SKILL.md         # 完整规范文档（V7.0）
-├── index_A.html     # 晨曦暖色版模板（Light Mode）
-├── index_B.html     # 暮影电影版模板（Dark Mode）
-└── README.md        # 本文件
-```
+我是一个不会代码的小白，但我希望能成为自然界的一个扩音器。虽然我错过了比赛的截止日期，但我对自然与科技的热爱永不打折。欢迎所有热爱鸟类的博主和开发者一起提交 Pull Request，共同丰富这个百鸟回响的文明宇宙！
 
-## 完整规范
+---
 
-请参阅 [SKILL.md](./SKILL.md) 了解：
+## 完整技术规范
+
+请参阅 [SKILL.md](./SKILL.md) 了解完整的技术规范，包括：
+
 - 布局规范与 CSS 变量
 - 自动主题色系统（中国古典色谱）
 - 羽色提取铁律（13 部位逐项核对）
@@ -94,6 +89,16 @@ bird-science-video-generator/
 - 研究工作流（WebSearch 交叉验证）
 - 零幻觉约束（邮票/国鸟/科技/文化配图）
 - Post-Render Checklist
+
+## 文件说明
+
+```
+bird-science-video-generator/
+├── SKILL.md         # 完整技术规范文档（V7.0）
+├── index_A.html     # 晨曦暖色版模板（Light Mode）
+├── index_B.html     # 暮影电影版模板（Dark Mode）
+└── README.md        # 本文件
+```
 
 ## License
 
