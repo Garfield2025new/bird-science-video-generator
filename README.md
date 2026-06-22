@@ -30,6 +30,22 @@ Through an Obsidian-inspired non-linear knowledge graph, this project orchestrat
 
 ---
 
+## 🎬 Demo 演示 (Demo)
+
+以戴胜 (Eurasian Hoopoe) 为例，展示两种输出效果：
+
+**HyperFrames 纯渲染效果：**
+
+<video src="demo/demo_render.mp4" width="100%" controls></video>
+
+**叠加实拍素材 + 剪映剪辑后的最终成品：**
+
+> 注：此版本在 HyperFrames 渲染的基础上，额外叠加了实拍戴胜视频素材，并在剪映中手动添加了片头图片、文案等元素，非纯渲染效果。
+
+<video src="demo/demo_cut.mp4" width="100%" controls></video>
+
+---
+
 ## 🚀 快速开始 (Quick Start)
 
 ### 1. 选择版本与布局
@@ -116,6 +132,9 @@ bird-science-video-generator/
 ├── SKILL.md         # 完整技术规范文档（V7.0）
 ├── index_A.html     # 晨曦暖色版模板（Light Mode）
 ├── index_B.html     # 暮影电影版模板（Dark Mode）
+├── demo/
+│   ├── demo_render.mp4  # HyperFrames 纯渲染 Demo
+│   └── demo_cut.mp4     # 叠加实拍 + 剪映成品 Demo
 └── README.md        # 本文件
 ```
 
